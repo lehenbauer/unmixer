@@ -10,4 +10,4 @@ https://py2app.readthedocs.io/en/latest/tutorial.html
 
 https://riptutorial.com/python/example/6626/py2app
 
-
+./dist/MyApplication.app/Contents/MacOS/MyApplication

@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
 
+import unmix
+
 class MyGUI:
     def __init__(self, root):
         self.root = root
@@ -15,7 +17,7 @@ class MyGUI:
 
 
     def setup_gui(self):
-        self.root.title("Stem and Backing Track Extractor")
+        self.root.title("Unmixer - Stem and Backing Track Extractor")
 
         tk.Label(self.root, text="Stems", font=("Helvetica", 14, "bold")).grid(row=0, column=0, sticky='w')
         tk.Label(self.root, text="Backing Tracks", font=("Helvetica", 14, "bold")).grid(row=0, column=1, sticky='w')
@@ -91,5 +93,6 @@ class MyGUI:
 
 root = tk.Tk()
 root.my_gui = MyGUI(root)
+unmix.create_console(tk)
+print("yo baby yo baby yo")
 root.mainloop()
-
