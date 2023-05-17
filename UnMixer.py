@@ -84,12 +84,14 @@ class MyGUI:
             messagebox.showerror("No Stems", "Please select at least one stem or backing track")
             return
         file_path = filedialog.askopenfilename()
+
         print(f'"{file_path}"')
         print("Stems: ", stems)
         print("Backing Tracks: ", backing_tracks)
         print("Filter: ", filter)
         print("Splitter: ", splitter)
-        self.root.quit()
+        unmix.run_lalal(input_file=file_path, stems=stems, backing_tracks=backing_tracks, filter=filter, splitter=splitter)
+        #self.root.quit()
 
 root = tk.Tk()
 root.my_gui = MyGUI(root)
