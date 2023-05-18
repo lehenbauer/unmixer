@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import os
+import sys
 
 import unmix
 
@@ -85,6 +86,8 @@ class MyGUI:
             return
         file_path = filedialog.askopenfilename()
 
+        print(f'PATH: {os.environ.get("PATH")}')
+        print(f'sys.executable: {sys.executable}')
         print(f'"{file_path}"')
         print("Stems: ", stems)
         print("Backing Tracks: ", backing_tracks)
@@ -97,4 +100,5 @@ root = tk.Tk()
 root.my_gui = MyGUI(root)
 unmix.create_console(tk)
 print("yo baby yo baby yo")
+print(f"current dir: {os.getcwd()}")
 root.mainloop()

@@ -9,7 +9,10 @@ from setuptools import setup
 
 APP = ['UnMixer.py']
 DATA_FILES = []
-OPTIONS = {}
+OPTIONS = {
+    'iconfile':'unmixer.icns',
+    'packages': [],
+}
 
 setup(
     app=APP,

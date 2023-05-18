@@ -58,15 +58,19 @@ def run_lalal(input_file, stems, backing_tracks, filter, splitter):
                    "lalalai_splitter.py",
                    "--input",
                    input_file,
-                   "--stems",
-                   *stems,
-                   "--backingtracks",
-                   *backing_tracks,
                    "--filter",
                    str(filter),
                    "--splitter",
                    splitter,
                    "--help"]
+
+        if stems:
+            command.append("--stems")
+            command.extend(*stems)
+
+        if backing_tracks:
+            command.append("--backing-tracks")
+            command.extend(*backing_tracks)
 
         print(command)
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
