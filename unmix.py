@@ -54,7 +54,7 @@ def read_subprocess_output(proc, console_widget):
     console_widget.after(100, check_queue)
 
 def run_lalal(input_file, stems, backing_tracks, filter, splitter):
-        command = ["python",
+        command = [sys.executable,
                    "lalalai_splitter.py",
                    "--input",
                    input_file,
@@ -66,11 +66,11 @@ def run_lalal(input_file, stems, backing_tracks, filter, splitter):
 
         if stems:
             command.append("--stems")
-            command.extend(*stems)
+            command.extend(stems)
 
         if backing_tracks:
             command.append("--backing-tracks")
-            command.extend(*backing_tracks)
+            command.extend(backing_tracks)
 
         print(command)
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

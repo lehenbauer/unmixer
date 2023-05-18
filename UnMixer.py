@@ -87,6 +87,7 @@ class MyGUI:
         file_path = filedialog.askopenfilename()
 
         print(f'PATH: {os.environ.get("PATH")}')
+        print(f'environ: {os.environ}')
         print(f'sys.executable: {sys.executable}')
         print(f'"{file_path}"')
         print("Stems: ", stems)

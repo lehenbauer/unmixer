@@ -8,7 +8,7 @@ Usage:
 from setuptools import setup
 
 APP = ['UnMixer.py']
-DATA_FILES = []
+DATA_FILES = ['lalalai_splitter.py']
 OPTIONS = {
     'iconfile':'unmixer.icns',
     'packages': [],
