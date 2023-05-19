@@ -14,8 +14,8 @@ class MyGUI:
         self.backing_track_vars = {}
         self.elements = ['vocals', 'drum', 'bass', 'piano', 'electric_guitar', 'acoustic_guitar', 'synthesizer', 'voice', 'strings', 'wind']
         self.api_key = tk.StringVar()
+        self.store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
         self.setup_gui()
-
 
     def setup_gui(self):
         self.root.title("Unmixer - Stem and Backing Track Extractor")
@@ -62,14 +62,13 @@ class MyGUI:
         if len(key) != 16 or not all(c in '0123456789abcdefABCDEF' for c in key):
             messagebox.showerror("Invalid API Key", "API Key must be 16 hexadecimal characters")
             return
-        with open(".apikey", "w") as file:
-            file.write(key)
+        self.store.set("api_key", key)
 
     def fetch_api_key(self):
-        if os.path.exists(".apikey"):
-            with open(".apikey", "r") as file:
-                return file.read().strip()
-        return ""
+        api_key = self.store.get("api_key")
+        if not api_key:
+            api_key = ""
+        return api_key
 
     def run_program(self):
         stems = [stem for stem, var in self.stem_vars.items() if var.get()]

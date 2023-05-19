@@ -2,6 +2,7 @@
 
 import queue
 import subprocess
+import sqlite3
 import sys
 import threading
 
@@ -75,4 +76,41 @@ def run_lalal(input_file, stems, backing_tracks, filter, splitter):
         print(command)
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         read_subprocess_output(proc, console_widget)
+
+class KeyValueStore:
+    def __init__(self, db_file):
+        """ initialize database connection and ensure the table exists """
+        self.conn = self.create_connection(db_file)
+        self.create_table()
+
+    def create_connection(self, db_file):
+        """ create a database connection to a SQLite database """
+        conn = sqlite3.connect(db_file)
+        return conn
+
+    def create_table(self):
+        """ create the key-value table if it doesn't exist """
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS kv_store (
+                key text PRIMARY KEY,
+                value text NOT NULL
+            );
+        """)
+
+    def get(self, key):
+        """ get a value by key, return None if not found """
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT value FROM kv_store WHERE key = ?", (key,))
+        row = cursor.fetchone()
+        return row[0] if row else None
+
+    def set(self, key, value):
+        """ set a value by key, update if already exists """
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            INSERT OR REPLACE INTO kv_store
+            (key, value) VALUES (?, ?)
+        """, (key, value))
+        self.conn.commit()
 
