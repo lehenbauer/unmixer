@@ -1,5 +1,3 @@
-
-
 import os
 import queue
 import subprocess
@@ -79,6 +77,7 @@ def run_lalal(input_file, stems, backing_tracks, which_filter, splitter):
         splitter,
     )
 
+
 class KeyValueStore:
     def __init__(self, db_file):
         """initialize database connection and ensure the table exists"""
@@ -121,5 +120,5 @@ class KeyValueStore:
         )
         self.conn.commit()
 
-store = KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
 
+store = KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))

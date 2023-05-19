@@ -175,14 +175,14 @@ class MyGUI:
             return
         file_path = filedialog.askopenfilename()
 
-        #print(f'PATH: {os.environ.get("PATH")}')
-        #print(f"environ: {os.environ}")
-        #print(f"sys.executable: {sys.executable}")
-        #print(f'"{file_path}"')
-        #print("Stems: ", stems)
-        #print("Backing Tracks: ", backing_tracks)
-        #print("Filter: ", which_filter)
-        #print("Splitter: ", splitter)
+        # print(f'PATH: {os.environ.get("PATH")}')
+        # print(f"environ: {os.environ}")
+        # print(f"sys.executable: {sys.executable}")
+        # print(f'"{file_path}"')
+        # print("Stems: ", stems)
+        # print("Backing Tracks: ", backing_tracks)
+        # print("Filter: ", which_filter)
+        # print("Splitter: ", splitter)
         unmix.run_lalal(
             input_file=file_path,
             stems=stems,
