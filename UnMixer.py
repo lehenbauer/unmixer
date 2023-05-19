@@ -183,7 +183,7 @@ class MyGUI:
         # print("Backing Tracks: ", backing_tracks)
         # print("Filter: ", which_filter)
         # print("Splitter: ", splitter)
-        unmix.run_lalal(
+        unmix.run_lalal_in_thread(
             input_file=file_path,
             stems=stems,
             backing_tracks=backing_tracks,
@@ -195,7 +195,7 @@ class MyGUI:
 
 root = tk.Tk()
 root.my_gui = MyGUI(root)
-unmix.create_console(tk)
+#unmix.create_console(tk)
 print("yo baby yo baby yo")
 print(f"current dir: {os.getcwd()}")
 root.mainloop()

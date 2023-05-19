@@ -1,9 +1,9 @@
 import os
-import queue
 import subprocess
 import sqlite3
 import sys
 import threading
+import traceback
 
 import lalalai_splitter
 
@@ -38,29 +38,6 @@ def create_console(tk):
 
     return console_widget
 
-
-def enqueue_output(out, queue):
-    for line in iter(out.readline, b""):
-        queue.put(line.decode("utf-8"))
-    out.close()
-
-
-def read_subprocess_output(proc, console_widget):
-    q = queue.Queue()
-    t = threading.Thread(target=enqueue_output, args=(proc.stdout, q))
-    t.daemon = True
-    t.start()
-
-    # Now we need to check the queue periodically and update the text widget
-    def check_queue():
-        while not q.empty():
-            line = q.get_nowait()
-            console_widget.insert("end", line)
-        console_widget.after(100, check_queue)  # Check again after 100ms
-
-    console_widget.after(100, check_queue)
-
-
 def run_lalal(input_file, stems, backing_tracks, which_filter, splitter):
     api_key = store.get("api_key")
 
@@ -76,6 +53,22 @@ def run_lalal(input_file, stems, backing_tracks, which_filter, splitter):
         which_filter,
         splitter,
     )
+
+def run_trapping_lalal(input_file, stems, backing_tracks, which_filter, splitter):
+    print('run_trapping_lalal is running in a thread')
+    try:
+        run_lalal(input_file, stems, backing_tracks, which_filter, splitter)
+    except Exception as e:
+        print(f'exception in thread: {e}')
+        traceback.print_exc()
+    print('run_trapping_lalal has finished')
+
+def run_lalal_in_thread(input_file, stems, backing_tracks, which_filter, splitter):
+    print('running lalal in thread')
+    t = threading.Thread(target=run_trapping_lalal, args=(input_file, stems, backing_tracks, which_filter, splitter))
+    t.daemon = True
+    t.start()
+    print('lalal thread started')
 
 
 class KeyValueStore:
