@@ -11,3 +11,6 @@ clean:
 
 alias:
 	python setup.py py2app --alias
+
+black:
+	black *.py

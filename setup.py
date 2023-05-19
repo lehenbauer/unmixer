@@ -7,16 +7,16 @@ Usage:
 
 from setuptools import setup
 
-APP = ['UnMixer.py']
-DATA_FILES = ['lalalai_splitter.py']
+APP = ["UnMixer.py"]
+DATA_FILES = ["lalalai_splitter.py"]
 OPTIONS = {
-    'iconfile':'unmixer.icns',
-    'packages': [],
+    "iconfile": "unmixer.icns",
+    "packages": [],
 }
 
 setup(
     app=APP,
     data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
+    options={"py2app": OPTIONS},
+    setup_requires=["py2app"],
 )
