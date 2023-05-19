@@ -6,6 +6,7 @@ import os
 import sys
 
 import unmix
+import lalalai_splitter
 
 class MyGUI:
     def __init__(self, root):
@@ -14,7 +15,18 @@ class MyGUI:
         self.backing_track_vars = {}
         self.elements = ['vocals', 'drum', 'bass', 'piano', 'electric_guitar', 'acoustic_guitar', 'synthesizer', 'voice', 'strings', 'wind']
         self.api_key = tk.StringVar()
+        self.tk_output_dir = tk.StringVar()
+
         self.store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
+
+        #api_key = self.store.get("api_key")
+
+        # Get output directory or set to default
+        self.output_dir = self.store.get("output_dir")
+        if not self.output_dir:
+            self.output_dir = os.path.expanduser("~/Downloads")
+            self.store.set("output_dir", self.output_dir)
+
         self.setup_gui()
 
     def setup_gui(self):
@@ -50,12 +62,20 @@ class MyGUI:
         tk.Entry(self.root, textvariable=self.api_key, width=16).grid(row=len(self.elements)+6, column=1, sticky='w')
         tk.Button(self.root, text='Save', command=self.save_api_key).grid(row=len(self.elements)+6, column=2)
 
+        # Output dir
+        tk.Label(self.root, text="Save to", font=("Helvetica", 14, "bold")).grid(row=len(self.elements)+7, column=0, sticky='w')
+        tk.Entry(self.root, textvariable=self.tk_output_dir, width=16).grid(row=len(self.elements)+7, column=1, sticky='w')
+        tk.Button(self.root, text='Change', command=self.set_output_dir).grid(row=len(self.elements)+7, column=2)
+
         # Set default values
         self.api_key.set(self.fetch_api_key())
         self.filter.set(1)  # Default filter value
         self.splitter.set("phoenix")  # Default splitter value
+        self.stem_vars['vocals'].set(True)
+        self.backing_track_vars['vocals'].set(True)
+        self.tk_output_dir.set(self.output_dir)
 
-        tk.Button(self.root, text='Run', command=self.run_program).grid(row=len(self.elements)+7, column=0, columnspan=2)
+        tk.Button(self.root, text='Run', command=self.run_program).grid(row=len(self.elements)+8, column=0, columnspan=2)
 
     def save_api_key(self):
         key = self.api_key.get().strip()
@@ -69,6 +89,12 @@ class MyGUI:
         if not api_key:
             api_key = ""
         return api_key
+
+    def set_output_dir(self):
+        self.output_dir = filedialog.askdirectory()
+        if self.output_dir:
+            self.store.set("output_dir", self.output_dir)
+            self.tk_output_dir.set(self.output_dir)
 
     def run_program(self):
         stems = [stem for stem, var in self.stem_vars.items() if var.get()]

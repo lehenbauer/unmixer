@@ -250,7 +250,7 @@ def main():
 
     batch_process_multiple_stems(args.license, args.input, args.output, args.stems, args.backingtracks, args.filter, args.splitter)
 
-if __name__ == '__main__':
+if False and __name__ == '__main__':
     try:
         main()
     except Exception as err:
