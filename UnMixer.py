@@ -37,35 +37,43 @@ class MyGUI:
 
         for i, element in enumerate(self.elements):
             self.stem_vars[element] = tk.BooleanVar()
-            tk.Checkbutton(self.root, text=element, variable=self.stem_vars[element]).grid(row=i+1, column=0, sticky='w')
+            tk.Checkbutton(self.root, text=element, variable=self.stem_vars[element]).grid(row=i + 1, column=0, sticky='w')
 
         for i, element in enumerate(self.elements):
             self.backing_track_vars[element] = tk.BooleanVar()
-            tk.Checkbutton(self.root, text=element, variable=self.backing_track_vars[element]).grid(row=i+1, column=1, sticky='w')
+            tk.Checkbutton(self.root, text=element, variable=self.backing_track_vars[element]).grid(row=i + 1, column=1, sticky='w')
 
         self.filter = tk.IntVar()  # Initialize filter variable
         self.splitter = tk.StringVar()  # Initialize splitter variable
 
         # Filter options
-        tk.Label(self.root, text="Filter", font=("Helvetica", 14, "bold")).grid(row=len(self.elements)+2, column=0, sticky='w')
-        tk.Radiobutton(self.root, text="Mild", variable=self.filter, value=0).grid(row=len(self.elements)+3, column=0, sticky='w')
-        tk.Radiobutton(self.root, text="Normal", variable=self.filter, value=1).grid(row=len(self.elements)+4, column=0, sticky='w')
-        tk.Radiobutton(self.root, text="Aggressive", variable=self.filter, value=2).grid(row=len(self.elements)+5, column=0, sticky='w')
+        tk.Label(self.root, text="Filter", font=("Helvetica", 14, "bold")).grid(row=len(self.elements) + 2, column=0, sticky='w')
+        tk.Radiobutton(self.root, text="Mild", variable=self.filter, value=0).grid(row=len(self.elements) + 3, column=0,
+                                                                                   sticky='w')
+        tk.Radiobutton(self.root, text="Normal", variable=self.filter, value=1).grid(row=len(self.elements) + 4, column=0,
+                                                                                     sticky='w')
+        tk.Radiobutton(self.root, text="Aggressive", variable=self.filter, value=2).grid(row=len(self.elements) + 5,
+                                                                                         column=0, sticky='w')
 
         # Splitter options
-        tk.Label(self.root, text="Splitter", font=("Helvetica", 14, "bold")).grid(row=len(self.elements)+2, column=1, sticky='w')
-        tk.Radiobutton(self.root, text="Phoenix", variable=self.splitter, value="phoenix").grid(row=len(self.elements)+3, column=1, sticky='w')
-        tk.Radiobutton(self.root, text="Cassiopeia", variable=self.splitter, value="cassiopeia").grid(row=len(self.elements)+4, column=1, sticky='w')
+        tk.Label(self.root, text="Splitter", font=("Helvetica", 14, "bold")).grid(row=len(self.elements) + 2, column=1,
+                                                                                  sticky='w')
+        tk.Radiobutton(self.root, text="Phoenix", variable=self.splitter, value="phoenix").grid(row=len(self.elements) + 3,
+                                                                                                column=1, sticky='w')
+        tk.Radiobutton(self.root, text="Cassiopeia", variable=self.splitter, value="cassiopeia").grid(
+            row=len(self.elements) + 4, column=1, sticky='w')
 
         # API Key
-        tk.Label(self.root, text="API Key", font=("Helvetica", 14, "bold")).grid(row=len(self.elements)+6, column=0, sticky='w')
-        tk.Entry(self.root, textvariable=self.api_key, width=16).grid(row=len(self.elements)+6, column=1, sticky='w')
-        tk.Button(self.root, text='Save', command=self.save_api_key).grid(row=len(self.elements)+6, column=2)
+        tk.Label(self.root, text="API Key", font=("Helvetica", 14, "bold")).grid(row=len(self.elements) + 6, column=0,
+                                                                                 sticky='w')
+        tk.Entry(self.root, textvariable=self.api_key, width=16).grid(row=len(self.elements) + 6, column=1, sticky='we')
+        tk.Button(self.root, text='Save', command=self.save_api_key).grid(row=len(self.elements) + 6, column=2)
 
         # Output dir
-        tk.Label(self.root, text="Save to", font=("Helvetica", 14, "bold")).grid(row=len(self.elements)+7, column=0, sticky='w')
-        tk.Entry(self.root, textvariable=self.tk_output_dir, width=16).grid(row=len(self.elements)+7, column=1, sticky='w')
-        tk.Button(self.root, text='Change', command=self.set_output_dir).grid(row=len(self.elements)+7, column=2)
+        tk.Label(self.root, text="Save to", font=("Helvetica", 14, "bold")).grid(row=len(self.elements) + 7, column=0,
+                                                                             sticky='w')
+        tk.Entry(self.root, textvariable=self.tk_output_dir, width=16).grid(row=len(self.elements) + 7, column=1, sticky='we')
+        tk.Button(self.root, text='Change', command=self.set_output_dir).grid(row=len(self.elements) + 7, column=2)
 
         # Set default values
         self.api_key.set(self.fetch_api_key())
@@ -75,7 +83,16 @@ class MyGUI:
         self.backing_track_vars['vocals'].set(True)
         self.tk_output_dir.set(self.output_dir)
 
-        tk.Button(self.root, text='Run', command=self.run_program).grid(row=len(self.elements)+8, column=0, columnspan=2)
+        tk.Button(self.root, text='Run', command=self.run_program).grid(row=len(self.elements) + 8, column=0,
+                                                                         columnspan=2)
+
+        # Configure grid to resize properly
+        self.root.grid_rowconfigure(len(self.elements) + 9, weight=1)  # Add row configuration for resizing
+        self.root.grid_columnconfigure(0, weight=1)  # Allow column 0 to resize horizontally
+        self.root.grid_columnconfigure(1, weight=1)  # Allow column 1 to resize horizontally
+        self.root.grid_columnconfigure(2, weight=1)  # Allow column 2 to resize horizontally
+
+
 
     def save_api_key(self):
         key = self.api_key.get().strip()
