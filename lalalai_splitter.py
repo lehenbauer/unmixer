@@ -133,6 +133,7 @@ def split_file(file_id, license, stem, filter_type, splitter):
     with urlopen(request) as response:
         split_result = json.load(response)
         if split_result["status"] == "error":
+            print(split_result)
             raise RuntimeError(split_result["error"])
 
 

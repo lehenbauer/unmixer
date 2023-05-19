@@ -6,6 +6,8 @@ import sys
 import unmix
 from unmix import store
 
+create_console = True
+
 
 class MyGUI:
     def __init__(self, root):
@@ -195,7 +197,8 @@ class MyGUI:
 
 root = tk.Tk()
 root.my_gui = MyGUI(root)
-#unmix.create_console(tk)
+if create_console:
+    unmix.create_console(tk)
 print("yo baby yo baby yo")
 print(f"current dir: {os.getcwd()}")
 root.mainloop()
