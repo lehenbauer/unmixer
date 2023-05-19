@@ -14,3 +14,7 @@ alias:
 
 black:
 	black *.py
+
+commit: black
+	git commit -a
+
