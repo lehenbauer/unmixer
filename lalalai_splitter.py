@@ -35,7 +35,19 @@ from urllib.request import urlopen, Request
 CURRENT_DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 URL_API = "https://www.lalal.ai/api/"
 
-stem_types = ['vocals', 'drum', 'bass', 'piano', 'electric_guitar', 'acoustic_guitar', 'synthesizer', 'voice', 'strings', 'wind']
+stem_types = [
+    "vocals",
+    "drum",
+    "bass",
+    "piano",
+    "electric_guitar",
+    "acoustic_guitar",
+    "synthesizer",
+    "voice",
+    "strings",
+    "wind",
+]
+
 
 def update_percent(pct):
     """
@@ -49,6 +61,7 @@ def update_percent(pct):
     sys.stdout.write(pct)
     sys.stdout.flush()
 
+
 def validate_stems(stems):
     """
     Validates the list of stems and returns the name of any stem that is
@@ -59,18 +72,19 @@ def validate_stems(stems):
             return stem
     return None
 
-def make_content_disposition(filename, disposition='attachment'):
+
+def make_content_disposition(filename, disposition="attachment"):
     """
     Generates a Content-Disposition header for a given filename, with
     the specified disposition type.
     """
     try:
-        filename.encode('ascii')
+        filename.encode("ascii")
         file_expr = f'filename="{filename}"'
     except UnicodeEncodeError:
         quoted = quote(filename)
         file_expr = f"filename*=utf-8''{quoted}"
-    return f'{disposition}; {file_expr}'
+    return f"{disposition}; {file_expr}"
 
 
 def upload_file(file_path, license):
@@ -84,7 +98,7 @@ def upload_file(file_path, license):
         "Content-Disposition": make_content_disposition(filename),
         "Authorization": f"license {license}",
     }
-    with open(file_path, 'rb') as f:
+    with open(file_path, "rb") as f:
         request = Request(url_for_upload, f, headers)
         with urlopen(request) as response:
             upload_result = json.load(response)
@@ -108,8 +122,13 @@ def split_file(file_id, license, stem, filter_type, splitter):
     headers = {
         "Authorization": f"license {license}",
     }
-    query_args = {'id': file_id, 'stem': stem, 'filter': filter_type, 'splitter': splitter}
-    encoded_args = urlencode(query_args).encode('utf-8')
+    query_args = {
+        "id": file_id,
+        "stem": stem,
+        "filter": filter_type,
+        "splitter": splitter,
+    }
+    encoded_args = urlencode(query_args).encode("utf-8")
     request = Request(url_for_split, encoded_args, headers=headers)
     with urlopen(request) as response:
         split_result = json.load(response)
@@ -127,7 +146,7 @@ def check_file(file_id):
     Raises a `RuntimeError` with API error message on processing error.
     """
     url_for_check = URL_API + "check/?"
-    query_args = {'id': file_id}
+    query_args = {"id": file_id}
     encoded_args = urlencode(query_args)
 
     is_queueup = False
@@ -160,6 +179,7 @@ def check_file(file_id):
 
         time.sleep(15)
 
+
 def get_filename_from_content_disposition(header):
     """
     Extracts the filename from a Content-Disposition header.
@@ -168,21 +188,27 @@ def get_filename_from_content_disposition(header):
     if match:
         return match.group(1)
     else:
-        raise ValueError('Invalid header Content-Disposition')
+        raise ValueError("Invalid header Content-Disposition")
+
 
 def download_file(url_for_download, output_path):
     with urlopen(url_for_download) as response:
-        filename = get_filename_from_content_disposition(response.headers["Content-Disposition"])
+        filename = get_filename_from_content_disposition(
+            response.headers["Content-Disposition"]
+        )
         filename = filename.replace("_split_by_lalalai", "")
         filename = filename.replace("_no_", "_all_but_", 1)
         filename = filename.replace(".aiff", ".aif", 1)
         file_path = os.path.join(output_path, filename)
-        with open(file_path, 'wb') as f:
-            while (chunk := response.read(8196)):
+        with open(file_path, "wb") as f:
+            while chunk := response.read(8196):
                 f.write(chunk)
     return file_path
 
-def batch_process_multiple_stems(license, input_path, output_path, stems, backing_tracks, filter_type, splitter):
+
+def batch_process_multiple_stems(
+    license, input_path, output_path, stems, backing_tracks, filter_type, splitter
+):
     """
     Processes an audio file specified by `input_path` and splits it into
     multiple stems using the Lalal.ai API.  The stems to be extracted are
@@ -207,7 +233,7 @@ def batch_process_multiple_stems(license, input_path, output_path, stems, backin
     # Upload the file
     print(f'Uploading the file "{input_path}"...')
     file_id = upload_file(file_path=input_path, license=license)
-    print(f'The file has been successfully uploaded (file id: {file_id})')
+    print(f"The file has been successfully uploaded (file id: {file_id})")
 
     # Split the file for each stem
     for i in range(len(stems)):
@@ -234,25 +260,60 @@ def batch_process_multiple_stems(license, input_path, output_path, stems, backin
 
         print(f'The file has been successfully split for stem "{stem}"')
 
+
 def main():
-    parser = ArgumentParser(description='Lalalai splitter')
-    parser.add_argument('--license', type=str, required=True, help='License key')
-    parser.add_argument('--input', type=str, required=True, help='Input directory or a file')
-    parser.add_argument('--output', type=str, default=CURRENT_DIR_PATH, help='Output directory')
-    parser.add_argument('--stems', nargs='+', default=['vocals'], help="List of stems to extract...  stems can be 'vocals', 'drum', 'bass', 'piano', 'electric_guitar', 'acoustic_guitar', 'synthesizer', 'voice', 'strings', 'wind'")
-    parser.add_argument('--backingtracks', nargs='+', default=['vocals'], help="List of all-but-stems (backing tracks without stem) to extract...")
-    parser.add_argument('--filter', type=int, default=1, choices=[0, 1, 2], help='0 (mild), 1 (normal), 2 (aggressive)')
-    parser.add_argument('--splitter', type=str, default='phoenix', choices=['phoenix', 'cassiopeia'], help='The type of neural network used to split audio')
+    parser = ArgumentParser(description="Lalalai splitter")
+    parser.add_argument("--license", type=str, required=True, help="License key")
+    parser.add_argument(
+        "--input", type=str, required=True, help="Input directory or a file"
+    )
+    parser.add_argument(
+        "--output", type=str, default=CURRENT_DIR_PATH, help="Output directory"
+    )
+    parser.add_argument(
+        "--stems",
+        nargs="+",
+        default=["vocals"],
+        help="List of stems to extract...  stems can be 'vocals', 'drum', 'bass', 'piano', 'electric_guitar', 'acoustic_guitar', 'synthesizer', 'voice', 'strings', 'wind'",
+    )
+    parser.add_argument(
+        "--backingtracks",
+        nargs="+",
+        default=["vocals"],
+        help="List of all-but-stems (backing tracks without stem) to extract...",
+    )
+    parser.add_argument(
+        "--filter",
+        type=int,
+        default=1,
+        choices=[0, 1, 2],
+        help="0 (mild), 1 (normal), 2 (aggressive)",
+    )
+    parser.add_argument(
+        "--splitter",
+        type=str,
+        default="phoenix",
+        choices=["phoenix", "cassiopeia"],
+        help="The type of neural network used to split audio",
+    )
 
     args = parser.parse_args()
 
     os.makedirs(args.output, exist_ok=True)
 
-    batch_process_multiple_stems(args.license, args.input, args.output, args.stems, args.backingtracks, args.filter, args.splitter)
+    batch_process_multiple_stems(
+        args.license,
+        args.input,
+        args.output,
+        args.stems,
+        args.backingtracks,
+        args.filter,
+        args.splitter,
+    )
 
-if False and __name__ == '__main__':
+
+if False and __name__ == "__main__":
     try:
         main()
     except Exception as err:
         print(err)
-
