@@ -39,9 +39,15 @@ def create_console(tk):
     return console_widget
 
 def run_lalal(input_file, stems, backing_tracks, which_filter, splitter):
-    api_key = store.get("api_key")
 
-    output_dir = store.get("output_dir")
+    # the thread needs its own KeyValueStore object so that it
+    # has its own connection to the database as SQLite doesn't
+    # allow multiple threads to use the same connection
+    thread_store = KeyValueStore(store.db_file)
+
+    api_key = thread_store.get("api_key")
+
+    output_dir = thread_store.get("output_dir")
     os.makedirs(output_dir, exist_ok=True)
 
     lalalai_splitter.batch_process_multiple_stems(
@@ -74,6 +80,7 @@ def run_lalal_in_thread(input_file, stems, backing_tracks, which_filter, splitte
 class KeyValueStore:
     def __init__(self, db_file):
         """initialize database connection and ensure the table exists"""
+        self.db_file = db_file
         self.conn = self.create_connection(db_file)
         self.create_table()
 
