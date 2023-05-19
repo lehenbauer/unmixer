@@ -4,7 +4,7 @@ import os
 import sys
 
 import unmix
-import lalalai_splitter
+from unmix import store
 
 
 class MyGUI:
@@ -27,15 +27,13 @@ class MyGUI:
         self.api_key = tk.StringVar()
         self.tk_output_dir = tk.StringVar()
 
-        self.store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
-
-        # api_key = self.store.get("api_key")
+        store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
 
         # Get output directory or set to default
-        self.output_dir = self.store.get("output_dir")
+        self.output_dir = store.get("output_dir")
         if not self.output_dir:
             self.output_dir = os.path.expanduser("~/Downloads")
-            self.store.set("output_dir", self.output_dir)
+            store.set("output_dir", self.output_dir)
 
         self.setup_gui()
 
@@ -144,10 +142,10 @@ class MyGUI:
                 "Invalid API Key", "API Key must be 16 hexadecimal characters"
             )
             return
-        self.store.set("api_key", key)
+        store.set("api_key", key)
 
     def fetch_api_key(self):
-        api_key = self.store.get("api_key")
+        api_key = store.get("api_key")
         if not api_key:
             api_key = ""
         return api_key
@@ -155,7 +153,7 @@ class MyGUI:
     def set_output_dir(self):
         self.output_dir = filedialog.askdirectory()
         if self.output_dir:
-            self.store.set("output_dir", self.output_dir)
+            store.set("output_dir", self.output_dir)
             self.tk_output_dir.set(self.output_dir)
 
     def run_program(self):
@@ -163,7 +161,7 @@ class MyGUI:
         backing_tracks = [
             track for track, var in self.backing_track_vars.items() if var.get()
         ]
-        filter = self.filter.get()
+        which_filter = self.filter.get()
         splitter = self.splitter.get()
         api_key = self.api_key.get().strip()
         if api_key == "":
@@ -177,19 +175,19 @@ class MyGUI:
             return
         file_path = filedialog.askopenfilename()
 
-        print(f'PATH: {os.environ.get("PATH")}')
-        print(f"environ: {os.environ}")
-        print(f"sys.executable: {sys.executable}")
-        print(f'"{file_path}"')
-        print("Stems: ", stems)
-        print("Backing Tracks: ", backing_tracks)
-        print("Filter: ", filter)
-        print("Splitter: ", splitter)
+        #print(f'PATH: {os.environ.get("PATH")}')
+        #print(f"environ: {os.environ}")
+        #print(f"sys.executable: {sys.executable}")
+        #print(f'"{file_path}"')
+        #print("Stems: ", stems)
+        #print("Backing Tracks: ", backing_tracks)
+        #print("Filter: ", which_filter)
+        #print("Splitter: ", splitter)
         unmix.run_lalal(
             input_file=file_path,
             stems=stems,
             backing_tracks=backing_tracks,
-            filter=filter,
+            which_filter=which_filter,
             splitter=splitter,
         )
         # self.root.quit()

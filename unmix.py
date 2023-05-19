@@ -1,8 +1,13 @@
+
+
+import os
 import queue
 import subprocess
 import sqlite3
 import sys
 import threading
+
+import lalalai_splitter
 
 
 class IORedirector(object):
@@ -58,31 +63,21 @@ def read_subprocess_output(proc, console_widget):
     console_widget.after(100, check_queue)
 
 
-def run_lalal(input_file, stems, backing_tracks, filter, splitter):
-    command = [
-        sys.executable,
-        "lalalai_splitter.py",
-        "--input",
+def run_lalal(input_file, stems, backing_tracks, which_filter, splitter):
+    api_key = store.get("api_key")
+
+    output_dir = store.get("output_dir")
+    os.makedirs(output_dir, exist_ok=True)
+
+    lalalai_splitter.batch_process_multiple_stems(
+        api_key,
         input_file,
-        "--filter",
-        str(filter),
-        "--splitter",
+        output_dir,
+        stems,
+        backing_tracks,
+        which_filter,
         splitter,
-        "--help",
-    ]
-
-    if stems:
-        command.append("--stems")
-        command.extend(stems)
-
-    if backing_tracks:
-        command.append("--backing-tracks")
-        command.extend(backing_tracks)
-
-    print(command)
-    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    read_subprocess_output(proc, console_widget)
-
+    )
 
 class KeyValueStore:
     def __init__(self, db_file):
@@ -125,3 +120,6 @@ class KeyValueStore:
             (key, value),
         )
         self.conn.commit()
+
+store = KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
+
