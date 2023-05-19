@@ -7,7 +7,7 @@ build: clean
 	python3 setup.py py2app
 
 clean:
-	rm -rf build dist __pycache__
+	rm -rf build dist __pycache__ .eggs
 
 alias:
 	python setup.py py2app --alias
