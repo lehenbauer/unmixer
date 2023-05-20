@@ -5,7 +5,7 @@ import subprocess
 import sys
 import threading
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 import traceback
 
 import lalalai_splitter
@@ -206,6 +206,11 @@ class UnmixGUI:
             relief="ridge",
             padx=10,
         ).grid(row=next_row, column=1, sticky="we")
+
+        self.progressbar = ttk.Progressbar(
+            self.frame2, length=100, orient="horizontal", mode="indeterminate"
+        )
+        self.progressbar.grid(row=next_row, column=2, sticky="we")
         next_row += 1
 
         # API Key
@@ -249,11 +254,7 @@ class UnmixGUI:
         )
         next_row += 1
 
-        self.filter.set(1)
-        self.splitter.set("phoenix")
-        self.stem_vars["vocals"].set(True)
-        self.backing_track_vars["vocals"].set(True)
-        self.tk_output_dir.set(store.get("output_dir"))
+        self.reset_defaults()
 
         if hide_api_key:
             self.api_key.set("0123456789abcdef")
@@ -281,6 +282,18 @@ class UnmixGUI:
         width_height = self.root.geometry().split("+")[0]
         width, height = map(int, width_height.split("x"))
         self.root.minsize(width, height)
+
+    def reset_defaults(self):
+        self.filter.set(1)
+        self.splitter.set("phoenix")
+
+        # reset stems to defaults
+        for stem in self.elements:
+            self.stem_vars[stem].set(False)
+        self.stem_vars["vocals"].set(True)
+        self.backing_track_vars["vocals"].set(True)
+
+        self.tk_output_dir.set(store.get("output_dir"))
 
     def set_stem_status(self, stem, message):
         self.status_messages[stem].set(message)
@@ -320,6 +333,8 @@ class UnmixGUI:
 
     def run_program(self):
         self.clear_all_statuses()
+        self.progressbar.start()
+
         stems = [stem for stem, var in self.stem_vars.items() if var.get()]
         backing_tracks = [
             track for track, var in self.backing_track_vars.items() if var.get()
@@ -485,6 +500,7 @@ def handle_progress_message(gui, message):
             return
         case "%unmixing_complete":
             gui.set_overall_status("All Done.")
+            gui.progressbar.stop()
             return
         case _:
             print(f"unhandled progress message: {message}")
