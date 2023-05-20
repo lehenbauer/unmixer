@@ -28,6 +28,7 @@ class MyGUI:
         ]
         self.api_key = tk.StringVar()
         self.tk_output_dir = tk.StringVar()
+        self.status_message = {}
 
         store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
 
@@ -62,6 +63,11 @@ class MyGUI:
             tk.Checkbutton(
                 self.root, text=element, variable=self.backing_track_vars[element]
             ).grid(row=next_row, column=1, sticky="w")
+
+            # Status message label for each stem and backing track
+            status_label = tk.Label(self.root, text="", font=("Helvetica", 12), width=12)
+            status_label.grid(row=next_row, column=2, sticky="ew")
+            self.status_message[element] = status_label
 
             next_row += 1
 
@@ -138,9 +144,9 @@ class MyGUI:
         self.root.grid_rowconfigure(
             next_row + 1, weight=1
         )  # Add row configuration for resizing
-        self.root.grid_columnconfigure(
-            0, weight=1
-        )  # Allow column 0 to resize horizontally
+        #self.root.grid_columnconfigure(
+        #    0, weight=1
+        #)  # Allow column 0 to resize horizontally
         self.root.grid_columnconfigure(
             1, weight=1
         )  # Allow column 1 to resize horizontally
