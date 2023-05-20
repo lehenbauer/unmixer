@@ -52,7 +52,10 @@ def check_output_queue():
     # Check if there's something in the queue
     while not output_queue.empty():
         # If there is, write it to the text widget
-        console_widget.insert("end", output_queue.get())
+        message = output_queue.get()
+        if message.startswith('%'):
+            handle_progress_message(message)
+        console_widget.insert("end", message)
         console_widget.see("end")
 
     # Schedule the next call to this function

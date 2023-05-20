@@ -8,6 +8,11 @@ from unmix import store
 
 create_console = True
 
+status_messages = {}
+
+def set_status_message (stem, message):
+    status_messages[stem].set(message)
+
 
 class MyGUI:
     def __init__(self, root):
@@ -28,7 +33,6 @@ class MyGUI:
         ]
         self.api_key = tk.StringVar()
         self.tk_output_dir = tk.StringVar()
-        self.status_message = {}
 
         store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
 
@@ -83,7 +87,7 @@ class MyGUI:
                 padx=10,
             )
             status_label.grid(row=next_row, column=2, sticky="ew")
-            self.status_message[element] = status_label
+            status_messages[element] = status_label
 
             next_row += 1
 
