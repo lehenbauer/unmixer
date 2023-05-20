@@ -113,10 +113,13 @@ class UnmixGUI:
         self.root.title("Unmixer - Stem and Backing Track Extractor")
 
         self.frame1 = tk.Frame(self.root)
-        self.frame1.grid(row=0, column=0, sticky="nsew")
+        self.frame1.grid(row=0, column=0, sticky="ew")
 
         self.frame2 = tk.Frame(self.root)
-        self.frame2.grid(row=1, column=0, sticky="nsew")
+        self.frame2.grid(row=1, column=0, sticky="ew")
+
+        self.frame3 = tk.Frame(self.root)
+        self.frame2.grid(row=1, column=0, sticky="ew")
 
         # GUI elements for frame1
         # Stems, Backing Tracks, Labels, Filter, and Splitter
@@ -272,8 +275,10 @@ class UnmixGUI:
         self.frame2.grid_columnconfigure(2, weight=0)  # Column 2 not resizable
 
         # Configure grid to resize properly
-        self.root.grid_rowconfigure(0, weight=1)  # Allow frame1 to resize vertically
-        self.root.grid_rowconfigure(1, weight=1)  # Allow frame2 to resize vertically
+        self.root.grid_rowconfigure(0, weight=0)
+        self.root.grid_rowconfigure(1, weight=0)
+
+        self.root.grid_rowconfigure(0, weight=0)
         self.root.grid_columnconfigure(0, weight=1)  # Allow root to resize horizontally
 
         self.root.update()  # Force update for the window to calculate its size
@@ -282,6 +287,7 @@ class UnmixGUI:
         width_height = self.root.geometry().split("+")[0]
         width, height = map(int, width_height.split("x"))
         self.root.minsize(width, height)
+        self.root.maxsize(10000, height)
 
     def reset_defaults(self):
         self.filter.set(1)
