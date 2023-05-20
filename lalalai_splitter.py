@@ -1,4 +1,3 @@
-
 # Copyright (c) 2021 LALAL.AI
 # Copyright (c) 2023 Karl Lehenbauer
 #
@@ -46,7 +45,6 @@ stem_types = [
     "strings",
     "wind",
 ]
-
 
 
 def validate_stems(stems):
@@ -120,7 +118,7 @@ def split_file(file_id, license, stem, filter_type, splitter):
     with urlopen(request) as response:
         split_result = json.load(response)
         if split_result["status"] == "error":
-            print(f'%split_result_error {split_result}')
+            print(f"%split_result_error {split_result}")
             raise RuntimeError(split_result["error"])
 
 
@@ -218,14 +216,14 @@ def batch_process_multiple_stems(
     # Upload the file
     print(f'%uploading "{input_path}"')
     file_id = upload_file(file_path=input_path, license=license)
-    #print(f"The file has been successfully uploaded (file id: {file_id})")
-    print(f'%uploaded {file_id}')
+    # print(f"The file has been successfully uploaded (file id: {file_id})")
+    print(f"%uploaded {file_id}")
 
     # Split the file for each stem
     for i in range(len(stems)):
         stem = stems[i]
-        #print(f'Processing the file for stem "{stem}"...')
-        print(f'%split_start {stem}')
+        # print(f'Processing the file for stem "{stem}"...')
+        print(f"%split_start {stem}")
         if i == 0:
             split_file(file_id, license, stem, filter_type, splitter)
 
@@ -233,24 +231,21 @@ def batch_process_multiple_stems(
 
         if i + 1 < len(stems):
             next_stem = stems[i + 1]
-            #print(f'Early start processing of next stem extraction "{next_stem}"...')
-            print(f'%split_start {next_stem}')
+            # print(f'Early start processing of next stem extraction "{next_stem}"...')
+            print(f"%split_start {next_stem}")
             split_file(file_id, license, next_stem, filter_type, splitter)
 
-        #print(f'Downloading stem {stem} "{stem_track_url}"')
-        print(f'%download_start stem {stem}')
+        # print(f'Downloading stem {stem} "{stem_track_url}"')
+        print(f"%download_start stem {stem}")
         downloaded_file = download_file(stem_track_url, output_path)
-        print(f'%download_complete stem {stem}')
-
+        print(f"%download_complete stem {stem}")
 
         if stem in backing_tracks:
-            #print(f'Downloading backing track {stem} "{back_track_url}"')
-            print(f'%download_start back_track {stem}')
+            # print(f'Downloading backing track {stem} "{back_track_url}"')
+            print(f"%download_start back_track {stem}")
             downloaded_file = download_file(back_track_url, output_path)
-            print(f'%download_complete back_track {stem}')
+            print(f"%download_complete back_track {stem}")
 
-        #print(f'The file has been successfully split for stem "{stem}"')
-        print(f'%split_complete {stem}')
-    print(f'%unmixing_complete')
-
-
+        # print(f'The file has been successfully split for stem "{stem}"')
+        print(f"%split_complete {stem}")
+    print(f"%unmixing_complete")
