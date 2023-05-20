@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 
 # Copyright (c) 2021 LALAL.AI
 # Copyright (c) 2023 Karl Lehenbauer
@@ -48,18 +47,6 @@ stem_types = [
     "wind",
 ]
 
-
-def update_percent(pct):
-    """
-    Updates the console display to show a percentage value, overwriting
-    the previous value.
-    """
-    pct = str(pct)
-    sys.stdout.write("\b" * len(pct))
-    sys.stdout.write(" " * len(pct))
-    sys.stdout.write("\b" * len(pct))
-    sys.stdout.write(pct)
-    sys.stdout.flush()
 
 
 def validate_stems(stems):
@@ -133,11 +120,11 @@ def split_file(file_id, license, stem, filter_type, splitter):
     with urlopen(request) as response:
         split_result = json.load(response)
         if split_result["status"] == "error":
-            print(split_result)
+            print(f'%split_result_error {split_result}')
             raise RuntimeError(split_result["error"])
 
 
-def check_file(file_id):
+def check_file(stem, file_id):
     """
     Checks the status of a file submitted for stem separation by the
     Lalal.ai API.  Polls the API for updates until processing is complete,
@@ -149,8 +136,6 @@ def check_file(file_id):
     url_for_check = URL_API + "check/?"
     query_args = {"id": file_id}
     encoded_args = urlencode(query_args)
-
-    is_queueup = False
 
     while True:
         with urlopen(url_for_check + encoded_args) as response:
@@ -166,19 +151,18 @@ def check_file(file_id):
 
         if task_state == "progress":
             progress = int(check_result["task"]["progress"])
-            if progress == 0 and not is_queueup:
-                print("Queue up...")
-                is_queueup = True
-            elif progress > 0:
-                update_percent(f"Progress: {progress}%")
+            if progress == 0:
+                print(f"%split_waiting {stem}")
+            else:
+                print(f"%split_progress {stem} {progress}%")
 
         if task_state == "success":
-            update_percent("Progress: 100%\n")
+            print(f"%split_progress {stem} 100%")
             stem_track_url = check_result["split"]["stem_track"]
             back_track_url = check_result["split"]["back_track"]
             return stem_track_url, back_track_url
 
-        time.sleep(15)
+        time.sleep(10)
 
 
 def get_filename_from_content_disposition(header):
@@ -232,89 +216,41 @@ def batch_process_multiple_stems(
         raise ValueError(f"Unrecognized backing track: {invalid_track}")
 
     # Upload the file
-    print(f'Uploading the file "{input_path}"...')
+    print(f'%uploading "{input_path}"')
     file_id = upload_file(file_path=input_path, license=license)
-    print(f"The file has been successfully uploaded (file id: {file_id})")
+    #print(f"The file has been successfully uploaded (file id: {file_id})")
+    print(f'%uploaded {file_id}')
 
     # Split the file for each stem
     for i in range(len(stems)):
         stem = stems[i]
-        print(f'Processing the file for stem "{stem}"...')
+        #print(f'Processing the file for stem "{stem}"...')
+        print(f'%split_start {stem}')
         if i == 0:
             split_file(file_id, license, stem, filter_type, splitter)
 
-        stem_track_url, back_track_url = check_file(file_id)
+        stem_track_url, back_track_url = check_file(stem, file_id)
 
         if i + 1 < len(stems):
             next_stem = stems[i + 1]
-            print(f'Early start processing of next stem extraction "{next_stem}"...')
+            #print(f'Early start processing of next stem extraction "{next_stem}"...')
+            print(f'%split_start {next_stem}')
             split_file(file_id, license, next_stem, filter_type, splitter)
 
-        print(f'Downloading the stem track file "{stem_track_url}"...')
+        #print(f'Downloading stem {stem} "{stem_track_url}"')
+        print(f'%download_start stem {stem}')
         downloaded_file = download_file(stem_track_url, output_path)
-        print(f'The stem track file has been downloaded to "{downloaded_file}"')
+        print(f'%download_complete stem {stem}')
+
 
         if stem in backing_tracks:
-            print(f'Downloading the back track file "{back_track_url}"...')
+            #print(f'Downloading backing track {stem} "{back_track_url}"')
+            print(f'%download_start back_track {stem}')
             downloaded_file = download_file(back_track_url, output_path)
-            print(f'The back track file has been downloaded to "{downloaded_file}"')
+            print(f'%download_complete back_track {stem}')
 
-        print(f'The file has been successfully split for stem "{stem}"')
-
-
-def main():
-    parser = ArgumentParser(description="Lalalai splitter")
-    parser.add_argument("--license", type=str, required=True, help="License key")
-    parser.add_argument(
-        "--input", type=str, required=True, help="Input directory or a file"
-    )
-    parser.add_argument(
-        "--output", type=str, default=CURRENT_DIR_PATH, help="Output directory"
-    )
-    parser.add_argument(
-        "--stems",
-        nargs="+",
-        default=["vocals"],
-        help="List of stems to extract...  stems can be 'vocals', 'drum', 'bass', 'piano', 'electric_guitar', 'acoustic_guitar', 'synthesizer', 'voice', 'strings', 'wind'",
-    )
-    parser.add_argument(
-        "--backingtracks",
-        nargs="+",
-        default=["vocals"],
-        help="List of all-but-stems (backing tracks without stem) to extract...",
-    )
-    parser.add_argument(
-        "--filter",
-        type=int,
-        default=1,
-        choices=[0, 1, 2],
-        help="0 (mild), 1 (normal), 2 (aggressive)",
-    )
-    parser.add_argument(
-        "--splitter",
-        type=str,
-        default="phoenix",
-        choices=["phoenix", "cassiopeia"],
-        help="The type of neural network used to split audio",
-    )
-
-    args = parser.parse_args()
-
-    os.makedirs(args.output, exist_ok=True)
-
-    batch_process_multiple_stems(
-        args.license,
-        args.input,
-        args.output,
-        args.stems,
-        args.backingtracks,
-        args.filter,
-        args.splitter,
-    )
+        #print(f'The file has been successfully split for stem "{stem}"')
+        print(f'%split_complete {stem}')
+    print(f'%unmixing_complete')
 
 
-if False and __name__ == "__main__":
-    try:
-        main()
-    except Exception as err:
-        print(err)
