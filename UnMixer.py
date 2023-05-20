@@ -7,6 +7,7 @@ import unmix
 from unmix import store
 
 create_console = True
+hide_api_key = False
 
 status_messages = {}
 
@@ -178,7 +179,11 @@ class MyGUI:
         self.splitter.set("phoenix")
         self.stem_vars["vocals"].set(True)
         self.backing_track_vars["vocals"].set(True)
-        self.api_key.set(self.get_api_key())
+
+        if hide_api_key:
+            self.api_key.set('0123456789abcdef')
+        else:
+            self.api_key.set(self.fetch_api_key())
 
         # Grid column configurations for frame1
         self.frame1.grid_columnconfigure(0, weight=0)  # Column 0 not resizable
