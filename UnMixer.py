@@ -10,7 +10,8 @@ create_console = True
 
 status_messages = {}
 
-def set_status_message (stem, message):
+
+def set_status_message(stem, message):
     status_messages[stem].set(message)
 
 
@@ -35,6 +36,9 @@ class MyGUI:
         self.tk_output_dir = tk.StringVar()
 
         store = unmix.KeyValueStore(os.path.expanduser("~/.unmixer.sqlite3"))
+
+        self.tk_input_file = tk.StringVar()
+        self.input_file = None
 
         # Get output directory or set to default
         self.output_dir = store.get("output_dir")
@@ -141,6 +145,18 @@ class MyGUI:
         )
         next_row += 1
 
+        # Input file
+        tk.Label(self.frame2, text="Input File", font=("Helvetica", 14, "bold")).grid(
+            row=next_row, column=0, sticky="w"
+        )
+        tk.Entry(self.frame2, textvariable=self.tk_input_file, width=16).grid(
+            row=next_row, column=1, sticky="we"
+        )
+        tk.Button(self.frame2, text="Pick", command=self.set_input_file).grid(
+            row=next_row, column=2
+        )
+        next_row += 1
+
         # Output dir
         tk.Label(self.frame2, text="Save to", font=("Helvetica", 14, "bold")).grid(
             row=next_row, column=0, sticky="w"
@@ -148,7 +164,7 @@ class MyGUI:
         tk.Entry(self.frame2, textvariable=self.tk_output_dir, width=16).grid(
             row=next_row, column=1, sticky="we"
         )
-        tk.Button(self.frame2, text="Change", command=self.set_output_dir).grid(
+        tk.Button(self.frame2, text="Pick", command=self.set_output_dir).grid(
             row=next_row, column=2
         )
         next_row += 1
@@ -162,6 +178,7 @@ class MyGUI:
         self.splitter.set("phoenix")
         self.stem_vars["vocals"].set(True)
         self.backing_track_vars["vocals"].set(True)
+        self.api_key.set(self.get_api_key())
 
         # Grid column configurations for frame1
         self.frame1.grid_columnconfigure(0, weight=0)  # Column 0 not resizable
@@ -206,6 +223,10 @@ class MyGUI:
             store.set("output_dir", self.output_dir)
             self.tk_output_dir.set(self.output_dir)
 
+    def set_input_file(self):
+        self.input_file = filedialog.askopenfilename()
+        self.tk_input_file.set(self.input_file if self.input_file else "")
+
     def run_program(self):
         stems = [stem for stem, var in self.stem_vars.items() if var.get()]
         backing_tracks = [
@@ -218,12 +239,19 @@ class MyGUI:
             messagebox.showerror("No API Key", "Please set an API Key")
             return
 
+        if not self.input_file or self.input_file == "":
+            messagebox.showerror("No Input File", "Please select an input file")
+            return
+
+        if not os.path.isfile(input_file):
+            messagebox.showerror("No Input File", "Input file doesn't exist.")
+            return
+
         if len(stems) == 0 and len(backing_tracks) == 0:
             messagebox.showerror(
                 "No Stems", "Please select at least one stem or backing track"
             )
             return
-        file_path = filedialog.askopenfilename()
 
         # print(f'PATH: {os.environ.get("PATH")}')
         # print(f"environ: {os.environ}")
@@ -234,7 +262,7 @@ class MyGUI:
         # print("Filter: ", which_filter)
         # print("Splitter: ", splitter)
         unmix.run_lalal_in_thread(
-            input_file=file_path,
+            input_file=self.input_file,
             stems=stems,
             backing_tracks=backing_tracks,
             which_filter=which_filter,

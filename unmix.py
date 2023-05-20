@@ -53,7 +53,7 @@ def check_output_queue():
     while not output_queue.empty():
         # If there is, write it to the text widget
         message = output_queue.get()
-        if message.startswith('%'):
+        if message.startswith("%"):
             handle_progress_message(message)
         console_widget.insert("end", message)
         console_widget.see("end")
