@@ -190,7 +190,7 @@ def download_file(url_for_download, output_path):
 
 
 def batch_process_multiple_stems(
-    license, input_path, output_path, stems, backing_tracks, filter_type, splitter
+    api_key, input_path, output_path, stems, backing_tracks, filter_type, splitter
 ):
     """
     Processes an audio file specified by `input_path` and splits it into
@@ -215,30 +215,47 @@ def batch_process_multiple_stems(
 
     # Upload the file
     print(f'%uploading "{input_path}"')
-    file_id = upload_file(file_path=input_path, license=license)
+    file_id = upload_file(file_path=input_path, license=api_key)
     # print(f"The file has been successfully uploaded (file id: {file_id})")
     print(f"%uploaded {file_id}")
 
+    want = []
+    for candidate in [
+        "vocals",
+        "drum",
+        "bass",
+        "piano",
+        "electric_guitar",
+        "acoustic_guitar",
+        "synthesizer",
+        "voice",
+        "strings",
+        "wind",
+    ]:
+        if candidate in stems or candidate in backing_tracks:
+            want.append(candidate)
+
     # Split the file for each stem
-    for i in range(len(stems)):
-        stem = stems[i]
+    for i in range(len(want)):
+        stem = want[i]
         # print(f'Processing the file for stem "{stem}"...')
         print(f"%split_start {stem}")
         if i == 0:
-            split_file(file_id, license, stem, filter_type, splitter)
+            split_file(file_id, api_key, stem, filter_type, splitter)
 
         stem_track_url, back_track_url = check_file(stem, file_id)
 
         if i + 1 < len(stems):
-            next_stem = stems[i + 1]
+            next_stem = want[i + 1]
             # print(f'Early start processing of next stem extraction "{next_stem}"...')
             print(f"%split_start {next_stem}")
-            split_file(file_id, license, next_stem, filter_type, splitter)
+            split_file(file_id, api_key, next_stem, filter_type, splitter)
 
-        # print(f'Downloading stem {stem} "{stem_track_url}"')
-        print(f"%download_start stem {stem}")
-        downloaded_file = download_file(stem_track_url, output_path)
-        print(f"%download_complete stem {stem}")
+        if stem in stems:
+            # print(f'Downloading stem {stem} "{stem_track_url}"')
+            print(f"%download_start stem {stem}")
+            downloaded_file = download_file(stem_track_url, output_path)
+            print(f"%download_complete stem {stem}")
 
         if stem in backing_tracks:
             # print(f'Downloading backing track {stem} "{back_track_url}"')
