@@ -288,6 +288,11 @@ class UnmixGUI:
     def set_overall_status(self, message):
         self.overall_status.set(message)
 
+    def clear_all_statuses(self):
+        for stem in self.status_messages:
+            self.status_messages[stem].set("")
+        self.overall_status.set("")
+
     def save_api_key(self):
         key = self.api_key.get().strip()
         if len(key) != 16 or not all(c in "0123456789abcdefABCDEF" for c in key):
@@ -314,6 +319,7 @@ class UnmixGUI:
         self.tk_input_file.set(self.input_file if self.input_file else "")
 
     def run_program(self):
+        self.clear_all_statuses()
         stems = [stem for stem, var in self.stem_vars.items() if var.get()]
         backing_tracks = [
             track for track, var in self.backing_track_vars.items() if var.get()
