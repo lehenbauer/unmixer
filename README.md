@@ -37,6 +37,10 @@ Go to the latest release at https://github.com/lehenbauer/unmixer/releases and d
 
 Open the .dmg file and drag the UnMixer icon to the Applications folder.
 
+Unmount the dmg file by clicking on the eject icon next to it in Finder.
+
+Drag the dmg file to the Trash.
+
 ### How To Run It
 
 Double-click on the UnMixer icon.
@@ -54,6 +58,10 @@ When you're all set, click Run.  UnMixer will show its status in the Status area
 An indicator next to the Status area will move left and riight to show that it's working.
 
 If all goes well, the status will conclude with "All Done." and all your stems and backing tracks should be present in your Save-to folder.
+
+### How to Uninstall
+
+Drag UnMixer from your Applications folder to the Trash.
 
 ### developers developers developers developers
 
