@@ -21,7 +21,7 @@ Unmixer is not associated with LALAL.AI, just a personal project to help make mu
 
 ### Fees for lalal.ai
 
-LALAL.AI costs money, and you need to register, and get an API key.  They currently charge $15 for 90 minutes, $50 for 300 minutes or $70 for 550 minutes.  They run sales fairly often and they have big discounts for bulk pricing.  Their most expensive tier without discounts is about 17 cents per minute; prices fall rapidly if you buy larger minute increments, as little as 6 cents per minute.
+LALAL.AI costs money, and you need to register and get an API key.  They currently charge $15 for 90 minutes, $50 for 300 minutes or $70 for 550 minutes.  They run sales fairly often and they have big discounts for bulk pricing.  Their most expensive tier without discounts is about 17 cents per minute; prices fall rapidly if you buy larger minute increments, as little as 6 cents per minute.
 
 You pay by the minute, per stem/backing track combo.  That is, it costs no more to get the stem and backing track for one part than to get just one of the two.
 
@@ -33,11 +33,15 @@ It currently runs on Mac only but should be able to be ported to other operating
 
 ### How To Install It
 
-Download the .dmg file from GitHub at...  Mount it and drag the UnMixer icon to the Applications folder.
+Go to the latest release at https://github.com/lehenbauer/unmixer/releases and download the .dmg file.
+
+Open the .dmg file and drag the UnMixer icon to the Applications folder.
 
 ### How To Run It
 
-Double-click on the icon.  You will need to acquire an API key from lalal.ai and paste it into the API Key field in UnMixer, and hit Save.  The key should be 16 characters and consist of only digits and the letters 'abcdef'.
+Double-click on the UnMixer icon.
+
+You will need to acquire an API key from lalal.ai and paste it into the API Key field in UnMixer, and hit Save.  The key should be 16 characters and consist of only digits and the letters 'abcdef'.
 
 Pick the song you want to extract stems and/or backing tracks for by hitting "Pick" next to "Input File".
 
