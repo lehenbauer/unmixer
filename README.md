@@ -11,7 +11,7 @@ Unmixer is nothing more (or less) than a GUI frontend for LALAL.AI's AI-powered 
 
 ### Why UnMixer
 
-If you don't use UnMixer, you either need to use lalal.ai's website, where you have to upload the file repeatedly for each track you want to extract, or lalal's python program, lalalai_splitter, where you also have to run the program and upload the file repeatedly for each track you want to extract, or my version of the python program, lalali_splitter, which will only upload the file once and do all of the splitting in one run, and can also avoid downloading unwanted backing tracks or downloading backing tracks without the corresponding stems.
+If you don't use UnMixer, you either need to use [lalal.ai's website](https://lalal.ai/), where you have to upload the file repeatedly for each track you want to extract, or lalal's python program, [lalalai_splitter](https://github.com/OmniSaleGmbH/lalalai), where you also have to run the program and upload the file repeatedly for each track you want to extract, or [my version](https://github.com/lehenbauer/lalalai) of the python program, lalali_splitter, which will only upload the file once and do all of the splitting in one run, and can also avoid downloading unwanted backing tracks or downloading backing tracks without the corresponding stems.
 
 It's pretty cool, but that python command line is kind of daunting.  You need to tell it the input file, the output directory, the stems you want, the backing tracks you want, the filter and model settings, and your API key.
 
@@ -29,7 +29,7 @@ So for example if you wanted to extract five parts from a four-minute song, you 
 
 ### Requirements
 
-It currently runs on Mac only but should be able to be ported to other operating systems without great difficulty.
+It currently runs on Macs with reasonably current MacOS. It ought to be able to be ported to Windows and/or Linux.  I am not taking that on at this time but will entertain pull requests if someone is motivated to make it work.
 
 ### How To Install It
 
@@ -55,20 +55,19 @@ An indicator next to the Status area will move left and riight to show that it's
 
 If all goes well, the status will conclude with "All Done." and all your stems and backing tracks should be present in your Save-to folder.
 
-
-
 ### developers developers developers developers
 
-clone the repo
+If you are interested in banging on UnMixer, clone the repo and have at it.
 
-create a python venv that has wheel and the latest pip when building/testing, and activate it
+Create a python virtual environment with something like `python -m venv unmixenv` that has wheel, black the latest pip, and whatever I missed, when building/testing, and activate it.
 
-to run the program from the command line, `python3 UnMixer.py`
+to run the program from the command line, `python3 UnMixer.py`  This can be handy versus an icon launch because you might see more in the event of a failure.
 
 To build the release, `make build`.
 
-to build the disk image, you'll need brew
+to build the disk image, you'll need the [homebrew package manager](https://brew.sh) (and to install homebrew, you'll need Xcode -- but don't worry, it's free.)
 
-`brew install create-dmg`
+Once you've got brew up and running, install the create-dmg package by running `brew install create-dmg`.
 
-then use `make dmg`.
+After you've got a build, `make dmg` should make UnMixer.dmg in the top directory of UnMixer.
+
