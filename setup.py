@@ -10,7 +10,7 @@ from setuptools import setup
 APP = ["UnMixer.py"]
 DATA_FILES = ["lalalai_splitter.py"]
 OPTIONS = {
-    "iconfile": "unmixer.icns",
+    "iconfile": "support/unmixer.icns",
     "packages": [],
 }
 

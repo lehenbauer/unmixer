@@ -71,3 +71,4 @@ Once you've got brew up and running, install the create-dmg package by running `
 
 After you've got a build, `make dmg` should make UnMixer.dmg in the top directory of UnMixer.
 
+Image2Icons was used to make the icon.icns
