@@ -1,5 +1,5 @@
 
-<img src="support/omni_icon.png" alt="Omniscient AI wearing headphones">
+<img src="support/omni_icon.png" alt="Omniscient AI wearing headphones" width="50%">
 
 # Welcome to Unmixer
 
