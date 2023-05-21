@@ -493,7 +493,7 @@ def handle_progress_message(gui, message):
             gui.set_stem_status(msg[1], "Waiting for split to start...")
             return
         case "%split_progress":
-            gui.set_stem_status(msg[1], f"Splitting: {msg[2]}%")
+            gui.set_stem_status(msg[1], f"Splitting: {msg[2]}")
             return
         case "%download_start":
             gui.set_stem_status(msg[2], f"Downloading {msg[1]}...")
