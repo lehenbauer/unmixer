@@ -1,9 +1,9 @@
 
-<img src="support/omni_icon.png" alt="Omniscient AI wearing headphones" width="1024" height="1024">
+<img src="support/omni_icon.png" alt="Omniscient AI wearing headphones">
 
 # Welcome to Unmixer
 
-<img src="support/screenshot.png" alt="Screenshot of UnMixer GUI" width="1252" height="1260">
+<img src="support/screenshot.png" alt="Screenshot of UnMixer GUI">
 
 Unmixer unmixes music.  It will take a recording of multiple instruments playing concurrently and with varying degrees of quality, extract the vocals, drum, bass, piano, electric guitar, acoustic guitar, synthesizer, strings and winds.
 
