@@ -8,10 +8,10 @@ Usage:
 from setuptools import setup
 
 APP = ["UnMixer.py"]
-DATA_FILES = ["lalalai_splitter.py"]
+DATA_FILES = ["unmix.py", "lalalai_splitter.py"]
 OPTIONS = {
     "iconfile": "support/unmixer.icns",
-    "packages": [],
+    "packages": ['tkinter'],
 }
 
 setup(
